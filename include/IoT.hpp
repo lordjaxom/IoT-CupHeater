@@ -19,20 +19,17 @@ class IoTClass
     static constexpr uint32_t watchdogDelay = 60000;
     static constexpr uint32_t reconnectDelay = 1000;
 
-    static char const* defaultClientId;
-
     using Subscriber = std::function<void(String payload)>;
 
 public:
-    static constexpr uint32_t tick = 13; // some odd number to account for AC buttons
+    static constexpr uint32_t tick = 10;
 
     IoTClass(char const* topic, char const* wiFiSsid, char const* wiFiPassword, char const* mqttIp,
-             uint16_t mqttPort) noexcept;
-    IoTClass(char const* wiFiSsid, char const* wiFiPassword, char const* mqttIp, uint16_t mqttPort) noexcept;
+             uint16_t mqttPort = 1883) noexcept;
     IoTClass(IoTClass const&) = delete;
 
-    [[nodiscard]] String const& clientId() const { return clientId_; }
-    [[nodiscard]] String const& topic() const { return topic_; }
+    String const& clientId() const { return clientId_; }
+    String const& topic() const { return topic_; }
 
     void begin();
     void loop();
@@ -60,10 +57,6 @@ public:
     Event<void()> loopEvent;
 
 private:
-    IoTClass(String clientId, String topic,
-             char const* wiFiSsid, char const* wiFiPassword,
-             char const* mqttIp, uint16_t mqttPort) noexcept;
-
     void connectToWiFi();
     void connectToMqtt();
 
@@ -74,8 +67,8 @@ private:
     void mqttDisconnected();
     void mqttMessage(char const* topic, char const* payload, size_t length);
 
-    String const clientId_; // must stay constant
     String const topic_; // must stay constant
+    String const clientId_; // must stay constant
     String const hostname_; // must stay constant
     Timer watchdogTimer_;
 

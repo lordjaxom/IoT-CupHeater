@@ -4,12 +4,6 @@
 #include "Logger.hpp"
 #include "String.hpp"
 
-using namespace std;
-
-#if defined( IOT_TARGET_NAME )
-static char const* IoTClass::defaultClientId = IOT_TARGET_NAME;
-#endif
-
 static String toClientId(char const* topic)
 {
     String clientId(topic);
@@ -17,23 +11,17 @@ static String toClientId(char const* topic)
     return clientId;
 }
 
+static String toHostname(String clientId)
+{
+    clientId.toLowerCase();
+    return str("iot-", clientId);
+}
+
 IoTClass::IoTClass(char const* topic, char const* wiFiSsid, char const* wiFiPassword, char const* mqttIp,
                    uint16_t mqttPort) noexcept
-        : IoTClass(toClientId(topic), topic, wiFiSsid, wiFiPassword, mqttIp, mqttPort)
-{
-}
-
-IoTClass::IoTClass(char const* wiFiSsid, char const* wiFiPassword, char const* mqttIp, uint16_t mqttPort) noexcept
-        : IoTClass(defaultClientId, defaultClientId, wiFiSsid, wiFiPassword, mqttIp, mqttPort)
-{
-}
-
-IoTClass::IoTClass(String clientId, String topic,
-                   char const* wiFiSsid, char const* wiFiPassword,
-                   char const* mqttIp, uint16_t mqttPort) noexcept
-        : clientId_(std::move(clientId)),
-          topic_(std::move(topic)),
-          hostname_(str("IoT-", clientId_)),
+        : topic_(topic),
+          clientId_(toClientId(topic)),
+          hostname_(toHostname(clientId_)),
           watchdogTimer_([] { ESP.restart(); }),
           wiFiSsid_(wiFiSsid),
           wiFiPassword_(wiFiPassword),
@@ -57,14 +45,14 @@ void IoTClass::begin()
     watchdogTimer_.start(watchdogDelay);
 
     wiFiConnectHandler_ = WiFi.onStationModeGotIP([this](WiFiEventStationModeGotIP const&) { wiFiConnected(); });
-    wiFiDisconnectHandler_ = WiFi.onStationModeDisconnected(
-            [this](WiFiEventStationModeDisconnected const&) { wiFiDisconnected(); });
+    wiFiDisconnectHandler_ = WiFi.onStationModeDisconnected([this](WiFiEventStationModeDisconnected const&) { wiFiDisconnected(); });
     connectToWiFi();
 
     mqttClient_.onConnect([this](bool) { mqttConnected(); });
     mqttClient_.onDisconnect([this](AsyncMqttClientDisconnectReason) { mqttDisconnected(); });
-    mqttClient_.onMessage([this](char const* topic, char const* payload, AsyncMqttClientMessageProperties,
-                                 size_t length, size_t, size_t) { mqttMessage(topic, payload, length); });
+    mqttClient_.onMessage([this](char const* topic, char const* payload, AsyncMqttClientMessageProperties, size_t length, size_t, size_t) {
+        mqttMessage(topic, payload, length);
+    });
     mqttClient_.setClientId(clientId_.c_str());
     mqttClient_.setServer(mqttIp_, mqttPort_);
     mqttClient_.setWill(mqttWillTopic_.c_str(), 1, true, "Offline");

@@ -34,7 +34,7 @@ namespace detail {
 
 } // namespace detail
 
-#if defined( LOGGER_SERIAL )
+#if defined(LOGGER_SERIAL)
 #   include "LoggerSerial.hpp"
 using LoggerClass = LoggerSerial;
 #else

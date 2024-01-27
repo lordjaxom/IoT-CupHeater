@@ -3,9 +3,9 @@
 #include "IoT.hpp"
 #include "Output.hpp"
 
-Heater::Heater(Input input, Output& output) noexcept
+Heater::Heater(Input input, Output output) noexcept
         : input_(std::move(input)),
-          output_(output),
+          output_(std::move(output)),
           connected_(IoT.connectEvent.subscribe([this] { connected(); })),
           updateTimer_(updateDelay, true, [this] { update(); }),
           telemetryTimer_(telemetryDelay, true, [this] { publishTelemetry(); })
@@ -42,13 +42,7 @@ void Heater::connected()
 void Heater::update()
 {
     temperature_ = input_();
-    if (setpoint_ > 0 && temperature_ < setpoint_) {
-        if (!output_.get()) {
-            output_.set(true);
-        }
-    } else if (output_.get()) {
-        output_.set(false);
-    }
+    output_(setpoint_ > 0 && temperature_ < setpoint_);
 }
 
 void Heater::publishState() const

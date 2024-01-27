@@ -19,7 +19,7 @@ class Event<void(Args...)> final
     using Handler = std::function<Signature>;
 
 public:
-    Event() noexcept = default;
+    Event() noexcept {}
     Event(Event const&) = delete;
 
     Event& operator+=(Handler handler)
@@ -28,7 +28,7 @@ public:
         return *this;
     }
 
-    [[nodiscard]] Subscription subscribe(Handler handler)
+    Subscription subscribe(Handler handler)
     {
         auto it = handlers_.emplace(handlers_.end(), std::move(handler), false);
         return {&it->second, [](bool* deleted) { *deleted = true; }};

@@ -17,9 +17,10 @@ class Heater
     static constexpr uint32_t telemetryDelay = 1000;
 
     using Input = std::function<double()>;
+    using Output = std::function<void(bool value)>;
 
 public:
-    Heater(Input input, Output& output) noexcept;
+    Heater(Input input, Output output) noexcept;
     Heater(Heater const&) = delete;
 
     double get() const { return setpoint_; }
@@ -35,7 +36,7 @@ private:
     void publishTelemetry() const;
 
     Input input_;
-    Output& output_;
+    Output output_;
     Subscription connected_;
     Timer updateTimer_;
     Timer telemetryTimer_;

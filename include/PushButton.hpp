@@ -15,7 +15,6 @@ public:
     PushButton(PushButton const&) = delete;
 
     Event<void(unsigned clicks)> clickedEvent;
-    Event<void()> longClickedEvent;
 
 private:
     void loop();

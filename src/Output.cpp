@@ -18,10 +18,13 @@ Output::Output(const char* state, const char* falseValue, const char* trueValue,
 
 void Output::set(bool value)
 {
+    if (value_ == value) {
+        return;
+    }
+    value_ = value;
     if (output_) {
         output_(value_);
     }
-    value_ = value;
     publishState();
 }
 
