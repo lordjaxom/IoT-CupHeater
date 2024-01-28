@@ -3,8 +3,6 @@
 #include "IoT.hpp"
 #include "Timer.hpp"
 
-using namespace std;
-
 Timer::Timer(Handler handler) noexcept
         : Timer(0, std::move(handler))
 {

@@ -7,6 +7,7 @@
 #include "Heater.hpp"
 #include "IoT.hpp"
 #include "Output.hpp"
+#include "Pixels.hpp"
 #include "PushButton.hpp"
 
 static double thermistor_read();
@@ -21,17 +22,15 @@ static constexpr uint8_t  thermistor_port  = 4;
 static constexpr uint8_t  heatbed_port     = 16;
 static constexpr uint8_t  button_port      = 14;
 
-using Pixels = NeoPixelBus<NeoGrbwFeature, NeoEsp8266AsyncUart1800KbpsMethod>;
-
 OneWire                   oneWire(thermistor_port);
 DallasTemperature         thermistor(&oneWire);
-Pixels                    pixels( 10 );
+Pixels                    pixels(NeoPixels<NeoGrbwFeature, NeoEsp8266AsyncUart1800KbpsMethod>(), 10 );
 
 IoTClass                  IoT(mqtt_base_topic, wifi_ssid, wifi_password, mqtt_server);
 PushButton                button(debounce(gpioInput(button_port)));
 Output                    heatbed("POWER", gpioOutput(heatbed_port));
 Heater                    heater(thermistor_read, [](bool value) { heatbed.set(value); });
-Controller<Pixels>        controller(button, heater, pixels);
+Controller                controller(button, heater, pixels);
 //@formatter:on
 
 static double thermistor_read()

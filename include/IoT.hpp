@@ -66,6 +66,7 @@ private:
     void mqttConnected();
     void mqttDisconnected();
     void mqttMessage(char const* topic, char const* payload, size_t length);
+    void mqttSubscribe(String const& topic);
 
     String const topic_; // must stay constant
     String const clientId_; // must stay constant
@@ -83,7 +84,7 @@ private:
     String const mqttWillTopic_; // must stay constant
     Timer mqttReconnectTimer_;
     AsyncMqttClient mqttClient_;
-    std::map<String, Subscriber> mqttSubscriptions_;
+    std::multimap<String, Subscriber> mqttSubscriptions_;
 
     ESP8266WebServer webServer_;
     ESP8266HTTPUpdateServer updateServer_;

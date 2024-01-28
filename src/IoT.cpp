@@ -96,8 +96,11 @@ void IoTClass::publish(const String &topic, const char *payload, bool retain)
 
 void IoTClass::subscribe(String topic, Subscriber handler)
 {
-    // TODO: Implement subscriptions after connection is established
-    mqttSubscriptions_.emplace(std::move(topic), std::move(handler));
+    auto it = mqttSubscriptions_.emplace(std::move(topic), std::move(handler));
+
+    if (mqttClient_.connected() && mqttSubscriptions_.count(it->first) == 1) {
+        mqttSubscribe(it->first);
+    }
 }
 
 void IoTClass::subscribeCommand(const char *command, Subscriber handler)
@@ -150,10 +153,10 @@ void IoTClass::mqttConnected()
 
     publish(mqttWillTopic_, "Online", true);
 
-    for (auto const& subscription: mqttSubscriptions_) {
-        log("subscribing to ", subscription.first);
-
-        mqttClient_.subscribe(subscription.first.c_str(), 0);
+    auto it = mqttSubscriptions_.cbegin();
+    auto end = mqttSubscriptions_.cend();
+    for (; it != end; it = mqttSubscriptions_.upper_bound(it->first)) {
+        mqttSubscribe(it->first);
     }
 
     connectEvent();
@@ -179,5 +182,15 @@ void IoTClass::mqttMessage(char const* topic, char const* payload, size_t length
 
     log("received ", message, " from ", topic);
 
-    mqttSubscriptions_.find(topic)->second(std::move(message));
+    auto range = mqttSubscriptions_.equal_range(topic);
+    for (auto it = range.first; it != range.second; ++it) {
+        it->second(message);
+    }
+}
+
+void IoTClass::mqttSubscribe(const String &topic)
+{
+    log("subscribing to ", topic);
+
+    mqttClient_.subscribe(topic.c_str(), 0);
 }
