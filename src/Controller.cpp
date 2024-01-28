@@ -31,7 +31,7 @@ void Controller::update()
 
 void Controller::clicked(unsigned clicks)
 {
-    if (clicks == 0) {
+    if (clicks == PushButton::longClick) {
         mode_ = mode_->next();
         return;
     }

@@ -29,9 +29,9 @@ void ControllerModeNormal::update(uint32_t elapsed)
     }
 
     // pixels 3-10: temperature indicator
-    auto value = map(temperature, 20.0, 100.0, 0u, c_.pixels_.PixelsCount() * 255u);
-    for (size_t i = 0; i < 8; ++i) {
-        c_.pixels_.SetPixelColor(2 + i, RgbColor(std::min(value, 255u), 0, 0));
+    auto value = map(temperature, 20.0, 100.0, 0u, (c_.pixels_.PixelsCount() - 2) * 255u);
+    for (size_t i = 2; i < c_.pixels_.PixelsCount(); ++i) {
+        c_.pixels_.SetPixelColor(i, RgbColor(std::min(value, 255u), 0, 0));
         value = value > 255 ? value - 255 : 0;
     }
 }

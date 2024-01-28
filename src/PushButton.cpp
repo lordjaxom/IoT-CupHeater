@@ -3,6 +3,9 @@
 #include "IoT.hpp"
 #include "PushButton.hpp"
 
+constexpr unsigned PushButton::singleClick;
+constexpr unsigned PushButton::longClick;
+
 PushButton::PushButton(Handler input) noexcept
         : input_(std::move(input)),
           updateTimer_(updateDelay, true, [this] { update(); }),
@@ -20,7 +23,7 @@ void PushButton::update()
             expiredTimer_.start(1000);
         } else if (!finished_) {
             ++clicks_;
-            clickedEvent(-1);
+            clickedEvent(singleClick);
             expiredTimer_.start(200);
         } else {
             finished_ = false;
@@ -33,7 +36,7 @@ void PushButton::expired()
     if (value_) {
         finished_ = true;
         if (clicks_ == 0) {
-            clickedEvent(0);
+            clickedEvent(longClick);
         }
     } else {
         clickedEvent(clicks_);

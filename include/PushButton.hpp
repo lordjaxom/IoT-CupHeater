@@ -13,6 +13,9 @@ class PushButton
     using Handler = std::function<bool()>;
 
 public:
+    static constexpr unsigned singleClick = 0;
+    static constexpr unsigned longClick = std::numeric_limits<unsigned>::max();
+
     explicit PushButton(Handler input) noexcept;
     PushButton(PushButton const&) = delete;
 

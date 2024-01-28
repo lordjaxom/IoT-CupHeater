@@ -19,7 +19,7 @@ class Event<void(Args...)> final
     using Handler = std::function<Signature>;
 
 public:
-    Event() noexcept {}
+    Event() noexcept;
     Event(Event const&) = delete;
 
     Event& operator+=(Handler handler)
@@ -61,5 +61,10 @@ public:
 private:
     std::list<std::pair<Handler, bool> > handlers_;
 };
+
+template<typename ...Args>
+inline Event<void(Args...)>::Event() noexcept
+{
+}
 
 #endif // ESP8266_IOT_EVENT_HPP

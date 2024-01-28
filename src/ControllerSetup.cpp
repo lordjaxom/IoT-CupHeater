@@ -3,6 +3,7 @@
 #include "ControllerSetup.hpp"
 #include "Heater.hpp"
 #include "Pixels.hpp"
+#include "PushButton.hpp"
 
 ControllerModeSetup::ControllerModeSetup(Controller &c) noexcept
         : c_(c),
@@ -23,7 +24,7 @@ void ControllerModeSetup::update(uint32_t elapsed)
 
 void ControllerModeSetup::clicked(unsigned int clicks)
 {
-    if (clicks == -1) {
+    if (clicks == PushButton::singleClick) {
         auto setpoint = c_.heater_.defaultSetpoint() + 10.0;
         if (setpoint > 100.0) {
             setpoint = 40.0;
