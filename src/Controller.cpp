@@ -24,7 +24,7 @@ void Controller::begin()
 
 void Controller::update()
 {
-    pixels_.ClearTo(RgbColor(0, 0, 0));
+    pixels_.ClearTo(Color::black());
     mode_->update(updateDelay);
     pixels_.Show();
 }

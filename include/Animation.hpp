@@ -8,7 +8,7 @@ class PulseAnimation
 public:
     PulseAnimation(RgbColor left, RgbColor right, uint32_t runtime) noexcept;
 
-    RgbColor operator()(uint32_t elapsed);
+    RgbColor animate(uint32_t elapsed);
 
 private:
     RgbColor left_;

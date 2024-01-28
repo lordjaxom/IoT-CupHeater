@@ -9,17 +9,17 @@
 
 namespace Color
 {
-    static RgbColor red{255, 0, 0};
-    static RgbColor lightred{255, 64, 64};
-    static RgbColor darkred{100, 0, 0};
-    static RgbColor faintred{45, 0, 0};
-    static RgbColor green{0, 255, 0};
-    static RgbColor blue{0, 0, 255};
-    static RgbColor yellow{255, 255, 0};
-    static RgbColor magenta{255, 0, 255};
-    static RgbColor cyan{0, 255, 255};
-    static RgbColor white{255, 255, 255};
-    static RgbColor black{0, 0, 0};
+    inline RgbColor red() { return {255, 0, 0}; }
+    inline RgbColor lightred() { return {255, 64, 64}; }
+    inline RgbColor darkred() { return {100, 0, 0}; }
+    inline RgbColor faintred() { return {45, 0, 0}; }
+    inline RgbColor green() { return {0, 255, 0}; }
+    inline RgbColor blue() { return {0, 0, 255}; }
+    inline RgbColor yellow() { return {255, 255, 0}; }
+    inline RgbColor magenta() { return {255, 0, 255}; }
+    inline RgbColor cyan() { return {0, 255, 255}; }
+    inline RgbColor white() { return {255, 255, 255}; }
+    inline RgbColor black() { return {0, 0, 0}; }
 }
 
 namespace detail
@@ -32,6 +32,7 @@ namespace detail
         virtual void Begin() = 0;
         virtual void ClearTo(RgbColor const& color) = 0;
         virtual void Show() = 0;
+        virtual uint16_t PixelsCount() const = 0;
 
         /**
          * Set the brighness of all pixels
@@ -47,12 +48,13 @@ namespace detail
     template<typename Feature, typename Method>
     class PixelsImpl : public Pixels {
     public:
-        explicit PixelsImpl(uint16_t count) noexcept
-                : pixels_(count) {}
+        explicit PixelsImpl(NeoPixelBus<Feature, Method>& neoPixelBus) noexcept
+                : pixels_(neoPixelBus) {}
 
         void Begin() override { pixels_.Begin(); }
         void ClearTo(RgbColor const& color) override { pixels_.ClearTo(color); }
         void Show() override { pixels_.Show(); }
+        uint16_t PixelsCount() const override { return pixels_.PixelCount(); }
 
         void SetBrightness(uint8_t brightness) override
         {
@@ -68,24 +70,22 @@ namespace detail
         }
 
     private:
-        NeoPixelBus<Feature, Method> pixels_;
+        NeoPixelBus<Feature, Method>& pixels_;
         uint8_t brightness_{255};
     };
 }
-
-template<typename Feature, typename Method>
-struct NeoPixels {};
 
 class Pixels
 {
 public:
     template<typename Feature, typename Method>
-    Pixels(NeoPixels<Feature, Method>, uint16_t countPixels) noexcept
-            : impl_(new detail::PixelsImpl<Feature, Method>(countPixels)) {}
+    explicit Pixels(NeoPixelBus<Feature, Method>& neoPixelBus) noexcept
+            : impl_(new detail::PixelsImpl<Feature, Method>(neoPixelBus)) {}
 
     void Begin() { impl_->Begin(); }
     void ClearTo(RgbColor const& color) { impl_->ClearTo(color); }
     void Show() { impl_->Show(); }
+    uint16_t PixelsCount() const { return impl_->PixelsCount(); }
     void SetPixelColor(uint16_t index, RgbColor const& color) { impl_->SetPixelColor(index, color); }
     void SetBrightness(uint8_t brightness) { impl_->SetBrightness(brightness); }
 

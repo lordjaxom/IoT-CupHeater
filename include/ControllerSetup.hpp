@@ -1,8 +1,8 @@
 #ifndef ESP8266_IOT_CONTROLLERMODESETUP_HPP
 #define ESP8266_IOT_CONTROLLERMODESETUP_HPP
 
+#include "Animation.hpp"
 #include "Controller.hpp"
-#include "Pixels.hpp"
 
 class ControllerModeSetup : public ControllerMode
 {
@@ -15,7 +15,7 @@ public:
 
 private:
     Controller& c_;
-    std::function<RgbColor(uint32_t elapsed)> powerAnimation_;
+    PulseAnimation powerAnimation_;
 };
 
 #endif // ESP8266_IOT_CONTROLLERMODESETUP_HPP
