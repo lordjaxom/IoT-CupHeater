@@ -20,6 +20,7 @@ void PushButton::update()
             expiredTimer_.start(1000);
         } else if (!finished_) {
             ++clicks_;
+            clickedEvent(-1);
             expiredTimer_.start(200);
         } else {
             finished_ = false;

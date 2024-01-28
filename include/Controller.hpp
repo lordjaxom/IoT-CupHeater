@@ -17,7 +17,7 @@ public:
 
     virtual void update(uint32_t elapsed) = 0;
     virtual void clicked(unsigned clicks) = 0;
-    virtual ControllerMode* next() = 0;
+    virtual std::unique_ptr<ControllerMode> next() = 0;
 };
 
 class Controller

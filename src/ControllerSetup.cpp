@@ -6,7 +6,7 @@
 
 ControllerModeSetup::ControllerModeSetup(Controller &c) noexcept
         : c_(c),
-          powerAnimation_(Color::blue(), Color::black(), 1000)
+          powerAnimation_(Color::blue(), Color::black(), 2000)
 {
 }
 
@@ -23,7 +23,7 @@ void ControllerModeSetup::update(uint32_t elapsed)
 
 void ControllerModeSetup::clicked(unsigned int clicks)
 {
-    if (clicks == 1) {
+    if (clicks == -1) {
         auto setpoint = c_.heater_.defaultSetpoint() + 10.0;
         if (setpoint > 100.0) {
             setpoint = 40.0;
@@ -32,7 +32,7 @@ void ControllerModeSetup::clicked(unsigned int clicks)
     }
 }
 
-ControllerMode *ControllerModeSetup::next()
+std::unique_ptr<ControllerMode> ControllerModeSetup::next()
 {
-    return new ControllerModeNormal(c_);
+    return std::unique_ptr<ControllerMode>(new ControllerModeNormal(c_));
 }

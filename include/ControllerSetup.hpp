@@ -11,7 +11,7 @@ public:
 
     void update(uint32_t elapsed) override;
     void clicked(unsigned clicks) override;
-    ControllerMode* next() override;
+    std::unique_ptr<ControllerMode> next() override;
 
 private:
     Controller& c_;
