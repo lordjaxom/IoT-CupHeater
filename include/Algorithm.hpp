@@ -12,9 +12,9 @@ T clamp(T const& value, T const& min, T const& max)
 template<typename T, typename U>
 U map(T const& value, T const& inMin, T const& inMax, U const& outMin, U const& outMax)
 {
-    return value < inMin ? outMin
-            : value >= inMax ? outMax
-            : (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+    return value < inMin ? outMin :
+           value >= inMax ? outMax :
+           (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
 
 #endif // ESP8266_IOT_ALGORITHM_HPP

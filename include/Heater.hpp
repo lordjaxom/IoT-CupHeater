@@ -43,9 +43,9 @@ private:
     Subscription connected_;
     Timer updateTimer_;
     Timer telemetryTimer_;
-    double setpoint_ {};
-    double temperature_ {};
-    double defaultSetpoint_ {60.0};
+    double setpoint_{};
+    double temperature_{};
+    double defaultSetpoint_{60.0};
 };
 
 #endif // ESP8266_IOT_HEATERCONTROL_HPP

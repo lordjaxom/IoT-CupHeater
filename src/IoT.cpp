@@ -43,14 +43,17 @@ void IoTClass::begin()
     watchdogTimer_.start(watchdogDelay);
 
     wiFiConnectHandler_ = WiFi.onStationModeGotIP([this](WiFiEventStationModeGotIP const&) { wiFiConnected(); });
-    wiFiDisconnectHandler_ = WiFi.onStationModeDisconnected([this](WiFiEventStationModeDisconnected const&) { wiFiDisconnected(); });
+    wiFiDisconnectHandler_ = WiFi.onStationModeDisconnected(
+            [this](WiFiEventStationModeDisconnected const&) { wiFiDisconnected(); });
     connectToWiFi();
 
     mqttClient_.onConnect([this](bool) { mqttConnected(); });
     mqttClient_.onDisconnect([this](AsyncMqttClientDisconnectReason) { mqttDisconnected(); });
-    mqttClient_.onMessage([this](char const* topic, char const* payload, AsyncMqttClientMessageProperties, size_t length, size_t, size_t) {
-        mqttMessage(topic, payload, length);
-    });
+    mqttClient_.onMessage(
+            [this](char const* topic, char const* payload, AsyncMqttClientMessageProperties, size_t length, size_t,
+                   size_t) {
+                mqttMessage(topic, payload, length);
+            });
     mqttClient_.setClientId(clientId_.c_str());
     mqttClient_.setServer(mqttIp_, mqttPort_);
     mqttClient_.setWill(mqttWillTopic_.c_str(), 1, true, "Offline");
@@ -73,7 +76,7 @@ void IoTClass::publish(String const& topic, String const& payload, bool retain)
     publish(topic, payload.c_str(), retain);
 }
 
-void IoTClass::publish(const String &topic, const char *payload, bool retain)
+void IoTClass::publish(const String& topic, const char* payload, bool retain)
 {
     if (!mqttClient_.connected()) {
         return;
@@ -93,7 +96,7 @@ void IoTClass::subscribe(String topic, Subscriber handler)
     }
 }
 
-void IoTClass::subscribeCommand(const char *command, Subscriber handler)
+void IoTClass::subscribeCommand(const char* command, Subscriber handler)
 {
     subscribe(str("cmnd/", topic_, "/", command), std::move(handler));
 }
@@ -178,7 +181,7 @@ void IoTClass::mqttMessage(char const* topic, char const* payload, size_t length
     }
 }
 
-void IoTClass::mqttSubscribe(const String &topic)
+void IoTClass::mqttSubscribe(const String& topic)
 {
     log("subscribing to ", topic);
 

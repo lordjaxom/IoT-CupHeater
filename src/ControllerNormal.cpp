@@ -5,7 +5,7 @@
 #include "Pixels.hpp"
 #include "Algorithm.hpp"
 
-ControllerModeNormal::ControllerModeNormal(Controller &c) noexcept
+ControllerModeNormal::ControllerModeNormal(Controller& c) noexcept
         : c_(c),
           heatingAnimation_(Color::faintred(), Color::red(), 2000)
 {

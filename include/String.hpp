@@ -1,7 +1,8 @@
 #ifndef ESP8266_IOT_STRING_HPP
 #define ESP8266_IOT_STRING_HPP
 
-namespace detail {
+namespace detail
+{
 
     inline void strAppend(String& result, char const* arg)
     {

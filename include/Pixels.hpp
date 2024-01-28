@@ -46,7 +46,8 @@ namespace detail
     };
 
     template<typename Feature, typename Method>
-    class PixelsImpl : public Pixels {
+    class PixelsImpl : public Pixels
+    {
     public:
         explicit PixelsImpl(NeoPixelBus<Feature, Method>& neoPixelBus) noexcept
                 : pixels_(neoPixelBus) {}

@@ -5,7 +5,7 @@
 #include "Pixels.hpp"
 #include "PushButton.hpp"
 
-ControllerModeSetup::ControllerModeSetup(Controller &c) noexcept
+ControllerModeSetup::ControllerModeSetup(Controller& c) noexcept
         : c_(c),
           powerAnimation_(Color::blue(), Color::black(), 2000)
 {
