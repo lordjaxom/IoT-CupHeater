@@ -22,8 +22,6 @@ class IoTClass
     using Subscriber = std::function<void(String payload)>;
 
 public:
-    static constexpr uint32_t tick = 10;
-
     IoTClass(char const* topic, char const* wiFiSsid, char const* wiFiPassword, char const* mqttIp,
              uint16_t mqttPort = 1883) noexcept;
     IoTClass(IoTClass const&) = delete;
@@ -88,8 +86,6 @@ private:
 
     ESP8266WebServer webServer_;
     ESP8266HTTPUpdateServer updateServer_;
-
-    uint32_t timestamp_{};
 };
 
 extern IoTClass IoT;

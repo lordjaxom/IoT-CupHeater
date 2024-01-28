@@ -28,8 +28,17 @@ namespace detail
 
         virtual void Begin() = 0;
         virtual void ClearTo(RgbColor const& color) = 0;
-        virtual void SetPixelColor(uint16_t index, RgbColor const& color) = 0;
         virtual void Show() = 0;
+
+        /**
+         * Set the brighness of all pixels
+         */
+        virtual void SetBrightness(uint8_t brightness) = 0;
+
+        /**
+         * Set the pixel color with gamma and brightness correction
+         */
+        virtual void SetPixelColor(uint16_t index, RgbColor const& color) = 0;
     };
 
     template<typename Feature, typename Method>
@@ -42,16 +51,22 @@ namespace detail
         void ClearTo(RgbColor const& color) override { pixels_.ClearTo(color); }
         void Show() override { pixels_.Show(); }
 
+        void SetBrightness(uint8_t brightness) override
+        {
+            brightness_ = brightness;
+        }
+
         /**
-         * Set the pixel color with gamma correction
+         * Set the pixel color with gamma and brightness correction
          */
         void SetPixelColor(uint16_t index, RgbColor const& color) override
         {
-            pixels_.SetPixelColor(index, GammaTable::apply(color));
+            pixels_.SetPixelColor(index, GammaTable::apply(color).Dim(brightness_));
         }
 
     private:
         NeoPixelBus<Feature, Method> pixels_;
+        uint8_t brightness_{255};
     };
 }
 
@@ -67,8 +82,9 @@ public:
 
     void Begin() { impl_->Begin(); }
     void ClearTo(RgbColor const& color) { impl_->ClearTo(color); }
-    void SetPixelColor(uint16_t index, RgbColor const& color) { impl_->SetPixelColor(index, color); }
     void Show() { impl_->Show(); }
+    void SetPixelColor(uint16_t index, RgbColor const& color) { impl_->SetPixelColor(index, color); }
+    void SetBrightness(uint8_t brightness) { impl_->SetBrightness(brightness); }
 
 private:
     std::unique_ptr<detail::Pixels> impl_;

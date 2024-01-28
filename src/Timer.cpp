@@ -22,21 +22,30 @@ Timer::Timer(uint32_t timeout, bool repeat, Handler handler) noexcept
 
 void Timer::start(uint32_t timeout, bool repeat)
 {
-    remaining_ = timeout;
-    nextTimeout_ = repeat ? timeout : 0;
+    timeout_ = timeout;
+    repeat_ = repeat;
+    startTime_ = millis();
 }
 
 void Timer::stop()
 {
-    remaining_ = 0;
+    timeout_ = 0;
 }
 
 void Timer::loop()
 {
-    if (remaining_ > IoTClass::tick) {
-        remaining_ -= IoTClass::tick;
-    } else if (remaining_ > 0) {
-        remaining_ = nextTimeout_;
+    if (timeout_ == 0) {
+        return;
+    }
+
+    auto now = millis();
+    auto elapsed = now - startTime_;
+    if (elapsed >= timeout_) {
+        if (repeat_) {
+            startTime_ = now;
+        } else {
+            timeout_ = 0;
+        }
         handler_();
     }
 }

@@ -16,16 +16,22 @@ namespace detail
 {
     struct FadeAnimation
     {
-        static constexpr uint8_t minimum = 0;
+        static constexpr uint8_t minimum = 45;
         static constexpr uint8_t maximum = 255;
+        static constexpr uint8_t step = 10;
 
         static_assert(minimum < maximum, "minimum must be less than maximum");
 
         RgbColor next()
         {
             auto last = static_cast<uint8_t>(current_);
-            current_ += direction_ ? 1 : -1;
-            if (current_ == minimum || current_ == maximum) {
+            current_ += (direction_ ? 1 : -1) * step;
+            if (current_ <= minimum || current_ >= maximum) {
+                if (current_ < minimum) {
+                    current_ = minimum;
+                } else if (current_ > maximum) {
+                    current_ = maximum;
+                }
                 direction_ = !direction_;
             }
             return {last, 0, 0};

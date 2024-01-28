@@ -5,22 +5,22 @@
 
 PushButton::PushButton(Handler input) noexcept
         : input_(std::move(input)),
-          looped_(IoT.loopEvent.subscribe([this] { loop(); })),
-          timer_([this] { expired(); })
+          updateTimer_(updateDelay, true, [this] { update(); }),
+          expiredTimer_([this] { expired(); })
 {
 }
 
-void PushButton::loop()
+void PushButton::update()
 {
     bool value = input_();
     if (value_ != value) {
         value_ = value;
 
         if (value_) {
-            timer_.start(1000);
+            expiredTimer_.start(1000);
         } else if (!finished_) {
             ++clicks_;
-            timer_.start(200);
+            expiredTimer_.start(200);
         } else {
             finished_ = false;
         }

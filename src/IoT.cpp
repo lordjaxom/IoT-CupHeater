@@ -61,21 +61,13 @@ void IoTClass::begin()
 
     beginEvent();
     beginEvent.clear();
-
-    timestamp_ = millis();
 }
 
 void IoTClass::loop()
 {
     webServer_.handleClient();
-
     loopEvent();
-
-    uint32_t elapsed = millis() - timestamp_;
-    if (elapsed < tick) {
-        delay(tick - elapsed);
-    }
-    timestamp_ = millis();
+//    delay(1);
 }
 
 void IoTClass::publish(String const& topic, String const& payload, bool retain)

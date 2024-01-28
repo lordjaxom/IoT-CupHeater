@@ -8,6 +8,8 @@
 
 class PushButton
 {
+    static constexpr uint32_t updateDelay = 10;
+
     using Handler = std::function<bool()>;
 
 public:
@@ -17,12 +19,12 @@ public:
     Event<void(unsigned clicks)> clickedEvent;
 
 private:
-    void loop();
+    void update();
     void expired();
 
     Handler input_;
-    Subscription looped_;
-    Timer timer_;
+    Timer updateTimer_;
+    Timer expiredTimer_;
     bool value_{};
     unsigned clicks_{};
     bool finished_{};

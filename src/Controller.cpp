@@ -26,6 +26,7 @@ Controller::Controller(PushButton &button, Heater &heater, Pixels &pixels) noexc
 
 void Controller::begin()
 {
+    pixels_.SetBrightness(128);
     pixels_.Begin();
     update();
 }
@@ -38,16 +39,14 @@ void Controller::update()
     auto temperature = heater_.read();
 
     // pixel 1: power indicator
-    pixels_.SetPixelColor(0, Color::cyan.Dim(100));
+    pixels_.SetPixelColor(0, Color::cyan);
 
     // pixel 2: heating indicator
     if (setpoint > 0) {
         if (temperature < setpoint - hysteresis) {
-            auto next = fadeAnimation_.next();
-            log("next color: ", int(next.R));
-            pixels_.SetPixelColor(1, next);
+            pixels_.SetPixelColor(1, fadeAnimation_.next());
         } else {
-            pixels_.SetPixelColor(1, Color::green.Dim(128));
+            pixels_.SetPixelColor(1, Color::green);
         }
     }
 
