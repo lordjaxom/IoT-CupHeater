@@ -25,9 +25,12 @@ public:
 
     double get() const { return setpoint_; }
     double read() const { return temperature_; }
+    double defaultSetpoint() const { return defaultSetpoint_; }
 
     void set(double value);
     void toggle();
+
+    void defaultSetpoint(double value) { defaultSetpoint_ = value; }
 
 private:
     void connected();

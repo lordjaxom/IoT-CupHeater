@@ -10,6 +10,9 @@
 namespace Color
 {
     static RgbColor red{255, 0, 0};
+    static RgbColor lightred{255, 64, 64};
+    static RgbColor darkred{100, 0, 0};
+    static RgbColor faintred{45, 0, 0};
     static RgbColor green{0, 255, 0};
     static RgbColor blue{0, 0, 255};
     static RgbColor yellow{255, 255, 0};

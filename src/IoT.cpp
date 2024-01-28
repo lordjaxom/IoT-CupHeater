@@ -38,8 +38,6 @@ void IoTClass::begin()
 {
     Logger.begin();
 
-    delay(1000);
-
     log("starting ESP-IoT based application");
 
     watchdogTimer_.start(watchdogDelay);
