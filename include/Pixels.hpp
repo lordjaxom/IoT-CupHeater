@@ -67,7 +67,7 @@ namespace detail
          */
         void SetPixelColor(uint16_t index, RgbColor const& color) override
         {
-            pixels_.SetPixelColor(index, GammaTable::apply(color).Dim(brightness_));
+            pixels_.SetPixelColor(index, GammaTable::apply(color.Dim(brightness_)));
         }
 
     private:

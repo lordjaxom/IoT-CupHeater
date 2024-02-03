@@ -10,12 +10,8 @@
 using Subscription = std::unique_ptr<bool, void (*)(bool* deleted)>;
 
 template<typename Signature>
-class Event;
-
-template<typename ...Args>
-class Event<void(Args...)> final
+class Event
 {
-    using Signature = void(Args...);
     using Handler = std::function<Signature>;
 
 public:
@@ -62,8 +58,8 @@ private:
     std::list<std::pair<Handler, bool> > handlers_;
 };
 
-template<typename ...Args>
-inline Event<void(Args...)>::Event() noexcept
+template<typename Signature>
+inline Event<Signature>::Event() noexcept
 {
 }
 
