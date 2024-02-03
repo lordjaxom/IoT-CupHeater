@@ -2,15 +2,18 @@
 #define ESP8266_IOT_ALGORITHM_HPP
 
 #include <algorithm>
+#include <type_traits>
 
 template<typename T>
-T clamp(T const& value, T const& min, T const& max)
+auto clamp(T value, T min, T max)
+-> typename std::enable_if<std::is_arithmetic<T>::value, T>::type
 {
     return std::max(min, std::min(max, value));
 }
 
 template<typename T, typename U>
-U map(T const& value, T const& inMin, T const& inMax, U const& outMin, U const& outMax)
+auto map(T value, T inMin, T inMax, U outMin, U outMax)
+-> typename std::enable_if<std::is_arithmetic<T>::value && std::is_arithmetic<U>::value, U>::type
 {
     return value < inMin ? outMin :
            value >= inMax ? outMax :

@@ -15,21 +15,27 @@ Heater::Heater(Input input, Output output) noexcept
 
 void Heater::set(double value)
 {
-    value = clamp(value, minimumSetpoint, maximumSetpoint);
+    if (value > 0.0) {
+        value = clamp(value, minimumSetpoint, maximumSetpoint);
+    }
 
     setpoint_ = value;
     if (value > 0) {
-        defaultSetpoint_ = value;
+        preset_ = value;
     }
     publishState();
 }
 
-void Heater::toggle()
+void Heater::preset(double value)
 {
-    if (setpoint_ > 0) {
-        set(0);
-    } else {
-        set(defaultSetpoint_);
+    preset_ = clamp(value, minimumSetpoint, maximumSetpoint);
+}
+
+void Heater::increasePreset()
+{
+    preset_ = std::floor(preset_ / setpointStep) * setpointStep + setpointStep;
+    if (preset_ > maximumSetpoint) {
+        preset_ = minimumSetpoint;
     }
 }
 

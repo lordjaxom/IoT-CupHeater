@@ -4,14 +4,14 @@
 #include <functional>
 
 #include "Event.hpp"
+#include "Output.hpp"
 #include "Timer.hpp"
-
-class Output;
 
 class Heater
 {
-    static constexpr double minimumSetpoint = 0.0;
+    static constexpr double minimumSetpoint = 40.0;
     static constexpr double maximumSetpoint = 100.0;
+    static constexpr double setpointStep = 10.0;
 
     static constexpr uint32_t updateDelay = 100;
     static constexpr uint32_t telemetryDelay = 1000;
@@ -25,12 +25,12 @@ public:
 
     double get() const { return setpoint_; }
     double read() const { return temperature_; }
-    double defaultSetpoint() const { return defaultSetpoint_; }
+    double preset() const { return preset_; }
 
     void set(double value);
-    void toggle();
-
-    void defaultSetpoint(double value) { defaultSetpoint_ = value; }
+    void toggle() { set(setpoint_ > 0 ? 0 : preset_); }
+    void preset(double value);
+    void increasePreset();
 
 private:
     void connected();
@@ -45,7 +45,7 @@ private:
     Timer telemetryTimer_;
     double setpoint_{};
     double temperature_{};
-    double defaultSetpoint_{60.0};
+    double preset_{60.0};
 };
 
 #endif // ESP8266_IOT_HEATERCONTROL_HPP
