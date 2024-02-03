@@ -9,23 +9,25 @@
 
 using Subscription = std::unique_ptr<bool, void (*)(bool* deleted)>;
 
-template<typename Signature>
+template<typename Signature, bool oneShot = false>
 class Event
 {
     using Handler = std::function<Signature>;
 
 public:
-    Event() noexcept;
+    Event() noexcept {}
     Event(Event const&) = delete;
 
     Event& operator+=(Handler handler)
     {
+        static_assert(oneShot, "Event::operator+= is not allowed for regular events");
         handlers_.emplace_back(std::move(handler), false);
         return *this;
     }
 
     Subscription subscribe(Handler handler)
     {
+        static_assert(!oneShot, "Event::subscribe is not allowed for one-shot events");
         auto it = handlers_.emplace(handlers_.end(), std::move(handler), false);
         return {&it->second, [](bool* deleted) { *deleted = true; }};
     }
@@ -59,8 +61,6 @@ private:
 };
 
 template<typename Signature>
-inline Event<Signature>::Event() noexcept
-{
-}
+using OneShotEvent = Event<Signature, true>;
 
 #endif // ESP8266_IOT_EVENT_HPP

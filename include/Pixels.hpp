@@ -20,6 +20,10 @@ namespace Color
     inline RgbColor cyan() { return {0, 255, 255}; }
     inline RgbColor white() { return {255, 255, 255}; }
     inline RgbColor black() { return {0, 0, 0}; }
+    inline RgbColor orange() { return {255, 165, 0}; }
+    inline RgbColor lightorange() { return {255, 200, 0}; }
+    inline RgbColor darkorange() { return {255, 100, 0}; }
+    inline RgbColor faintorange() { return {255, 50, 0}; }
 }
 
 namespace detail

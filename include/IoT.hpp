@@ -50,7 +50,7 @@ public:
 
     void subscribeCommand(char const* command, Subscriber handler);
 
-    Event<void()> beginEvent;
+    OneShotEvent<void()> beginEvent;
     Event<void()> connectEvent;
     Event<void()> loopEvent;
 

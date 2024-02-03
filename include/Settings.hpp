@@ -1,0 +1,9 @@
+#ifndef ESP8266_IOT_SETTINGS_HPP
+#define ESP8266_IOT_SETTINGS_HPP
+
+class Settings
+{
+
+};
+
+#endif // ESP8266_IOT_SETTINGS_HPP

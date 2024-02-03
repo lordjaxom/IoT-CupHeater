@@ -16,6 +16,7 @@ public:
 private:
     Controller& c_;
     PulseAnimation heatingAnimation_;
+    PulseAnimation coolingAnimation_;
 };
 
 #endif // ESP8266_IOT_CONTROLLERMODENORMAL_HPP

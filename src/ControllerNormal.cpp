@@ -7,7 +7,8 @@
 
 ControllerModeNormal::ControllerModeNormal(Controller& c) noexcept
         : c_(c),
-          heatingAnimation_(Color::faintred(), Color::red(), 2000)
+          heatingAnimation_(Color::faintred(), Color::red(), 2000),
+          coolingAnimation_(Color::faintorange(), Color::orange(), 4000)
 {
 }
 
@@ -26,6 +27,8 @@ void ControllerModeNormal::update(uint32_t elapsed)
         } else {
             c_.pixels_.SetPixelColor(1, Color::green());
         }
+    } else if (temperature > 50.0) {
+        c_.pixels_.SetPixelColor(1, coolingAnimation_.animate(elapsed));
     }
 
     // pixels 3-10: temperature indicator
