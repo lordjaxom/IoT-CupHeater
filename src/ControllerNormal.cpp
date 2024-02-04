@@ -1,4 +1,3 @@
-#include "Animation.hpp"
 #include "ControllerNormal.hpp"
 #include "ControllerSetup.hpp"
 #include "Heater.hpp"
@@ -8,7 +7,7 @@
 ControllerModeNormal::ControllerModeNormal(Controller& c) noexcept
         : c_(c),
           heatingAnimation_(Color::faintred(), Color::red(), 2000),
-          coolingAnimation_(Color::faintorange(), Color::orange(), 4000)
+          coolingAnimation_(Color::orange().Dim(80), Color::orange(), 4000)
 {
 }
 
@@ -34,7 +33,7 @@ void ControllerModeNormal::update(uint32_t elapsed)
     // pixels 3-10: temperature indicator
     auto value = map(temperature, 20.0, 100.0, 0u, (c_.pixels_.PixelsCount() - 2) * 255u);
     for (size_t i = 2; i < c_.pixels_.PixelsCount(); ++i) {
-        c_.pixels_.SetPixelColor(i, RgbColor(std::min(value, 255u), 0, 0));
+        c_.pixels_.SetPixelColor(i, Color::red().Dim(std::min(value, 255u)));
         value = value > 255 ? value - 255 : 0;
     }
 }

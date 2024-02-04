@@ -3,6 +3,9 @@
 
 class Settings
 {
+    static constexpr size_t eepromSize = 256;
+    static constexpr int eepromVersion = 1;
+
 public:
     Settings() = default;
     Settings(Settings const&) = delete;

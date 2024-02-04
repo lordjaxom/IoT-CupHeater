@@ -4,7 +4,7 @@
 
 void Settings::loadEeprom()
 {
-    EEPROM.begin(256);
+    EEPROM.begin(eepromSize);
 
     int address = 0;
     int version;
@@ -19,10 +19,10 @@ void Settings::loadEeprom()
 
 void Settings::saveEeprom()
 {
-    EEPROM.begin(256);
+    EEPROM.begin(eepromSize);
 
     int address = 0;
-    int version = 1;
+    int version = eepromVersion;
     EEPROM.put(address, version);
     address += sizeof(version);
     EEPROM.put(address, presetSetpoint_);
