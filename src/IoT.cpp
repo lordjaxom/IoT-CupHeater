@@ -60,6 +60,8 @@ void IoTClass::begin()
 
     updateServer_.setup(&webServer_, "/update", "admin", "admin");
 
+    settings_.begin();
+
     beginEvent();
     beginEvent.clear();
 }

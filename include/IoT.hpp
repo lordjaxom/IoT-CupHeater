@@ -12,6 +12,7 @@
 
 #include "Event.hpp"
 #include "Timer.hpp"
+#include "Settings.hpp"
 #include "String.hpp"
 
 class IoTClass
@@ -54,6 +55,8 @@ public:
     Event<void()> connectEvent;
     Event<void()> loopEvent;
 
+    Settings& settings() { return settings_; }
+
 private:
     void connectToWiFi();
     void connectToMqtt();
@@ -86,6 +89,8 @@ private:
 
     ESP8266WebServer webServer_;
     ESP8266HTTPUpdateServer updateServer_;
+
+    Settings settings_;
 };
 
 extern IoTClass IoT;

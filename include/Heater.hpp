@@ -20,17 +20,18 @@ class Heater
     using Output = std::function<void(bool value)>;
 
 public:
+    static double increasePreset(double value);
+
     Heater(Input input, Output output) noexcept;
     Heater(Heater const&) = delete;
 
     double get() const { return setpoint_; }
     double read() const { return temperature_; }
-    double preset() const { return preset_; }
+    double preset() const;
 
     void set(double value);
-    void toggle() { set(setpoint_ > 0 ? 0 : preset_); }
+    void toggle();
     void preset(double value);
-    void increasePreset();
 
 private:
     void connected();
@@ -45,7 +46,6 @@ private:
     Timer telemetryTimer_;
     double setpoint_{};
     double temperature_{};
-    double preset_{60.0};
 };
 
 #endif // ESP8266_IOT_HEATERCONTROL_HPP

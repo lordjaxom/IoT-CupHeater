@@ -3,6 +3,12 @@
 #include "IoT.hpp"
 #include "Output.hpp"
 
+double Heater::increasePreset(double value)
+{
+    value = std::floor(value / setpointStep) * setpointStep + setpointStep;
+    return value > maximumSetpoint ? minimumSetpoint : value;
+}
+
 Heater::Heater(Input input, Output output) noexcept
         : input_(std::move(input)),
           output_(std::move(output)),
@@ -13,6 +19,11 @@ Heater::Heater(Input input, Output output) noexcept
     IoT.subscribeCommand("SETPOINT", [this](String const& payload) { set(payload.toDouble()); });
 }
 
+double Heater::preset() const
+{
+    return IoT.settings().presetSetpoint();
+}
+
 void Heater::set(double value)
 {
     if (value > 0.0) {
@@ -21,22 +32,20 @@ void Heater::set(double value)
 
     setpoint_ = value;
     if (value > 0) {
-        preset_ = value;
+        IoT.settings().presetSetpoint(value);
     }
     publishState();
 }
 
-void Heater::preset(double value)
+void Heater::toggle()
 {
-    preset_ = clamp(value, minimumSetpoint, maximumSetpoint);
+    set(setpoint_ > 0 ? 0 : IoT.settings().presetSetpoint());
 }
 
-void Heater::increasePreset()
+void Heater::preset(double value)
 {
-    preset_ = std::floor(preset_ / setpointStep) * setpointStep + setpointStep;
-    if (preset_ > maximumSetpoint) {
-        preset_ = minimumSetpoint;
-    }
+    value = clamp(value, minimumSetpoint, maximumSetpoint);
+    IoT.settings().presetSetpoint(value);
 }
 
 void Heater::connected()

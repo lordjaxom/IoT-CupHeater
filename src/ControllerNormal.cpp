@@ -46,8 +46,8 @@ void ControllerModeNormal::clicked(unsigned int clicks)
     }
 }
 
-std::unique_ptr<ControllerMode> ControllerModeNormal::next()
+void ControllerModeNormal::next()
 {
     c_.heater_.set(0.0);
-    return std::unique_ptr<ControllerMode>(new ControllerModeSetup(c_));
+    c_.mode_.reset(new ControllerModeSetup(c_));
 }
