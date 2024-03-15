@@ -2,31 +2,48 @@
 
 #include "Settings.hpp"
 
+namespace
+{
+    constexpr size_t eepromSize = 256;
+    constexpr int eepromVersion = 1;
+
+    template<typename T>
+    T readEeprom(int& address)
+    {
+        T value;
+        EEPROM.get(address, value);
+        address += sizeof(value);
+        return value;
+    }
+
+    template<typename T>
+    void writeEeprom(int& address, T value)
+    {
+        EEPROM.put(address, value);
+        address += sizeof(value);
+    }
+}
+
 void Settings::loadEeprom()
 {
     EEPROM.begin(eepromSize);
 
     int address = 0;
-    int version;
-    EEPROM.get(address, version);
-    address += sizeof(version);
+    int version = readEeprom<int>(address);
     if (version >= 1) {
-        EEPROM.get(address, presetSetpoint_);
-        address += sizeof(presetSetpoint_);
+        presetSetpoint_ = readEeprom<double>(address);
     }
     EEPROM.end();
 }
 
-void Settings::saveEeprom()
+void Settings::saveEeprom() const
 {
     EEPROM.begin(eepromSize);
 
     int address = 0;
-    int version = eepromVersion;
-    EEPROM.put(address, version);
-    address += sizeof(version);
-    EEPROM.put(address, presetSetpoint_);
-    address += sizeof(presetSetpoint_);
+    writeEeprom(address, eepromVersion);
+    writeEeprom(address, presetSetpoint_);
+
     EEPROM.commit();
     EEPROM.end();
 }

@@ -3,9 +3,6 @@
 
 class Settings
 {
-    static constexpr size_t eepromSize = 256;
-    static constexpr int eepromVersion = 1;
-
 public:
     Settings() = default;
     Settings(Settings const&) = delete;
@@ -17,7 +14,7 @@ public:
 
 private:
     void loadEeprom();
-    void saveEeprom();
+    void saveEeprom() const;
 
     double presetSetpoint_{60.0};
 };
